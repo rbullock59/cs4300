@@ -1,0 +1,5 @@
+hw1_env/
+__pycache__/
+*.pyc
+.pytest_cache/
+hw*/INSTR/
