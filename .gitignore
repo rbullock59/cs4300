@@ -1,5 +1,10 @@
-hw1_env/
+env/
+myenv/
 __pycache__/
 *.pyc
 .pytest_cache/
 hw*/INSTR/
+db.sqlite3
+staticfiles/
+.coverage
+*.egg-info/
