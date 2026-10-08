@@ -2,6 +2,7 @@ services:
   - type: web
     name: movie-theater-booking
     env: python
+    plan: free
     buildCommand: "pip install -r requirements.txt && python manage.py collectstatic --noinput"
     startCommand: "python manage.py migrate --noinput && gunicorn movie_theater_booking.wsgi:application"
     envVars:
