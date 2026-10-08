@@ -36,14 +36,19 @@ python3 -m venv myenv --system-site-packages
 source myenv/bin/activate
 pip install -r requirements.txt
 
-python manage.py migrate
-python manage.py seed_demo_data      # optional sample movies/seats
+python manage.py migrate             # also seeds 3 demo movies + 9 seats
 python manage.py createsuperuser     # optional, for /admin/
 
 python manage.py runserver 0.0.0.0:3000
 ```
 
-Then open the DevEdu "app" link, or `http://localhost:3000/` locally.
+Then open the DevEdu "app" link, or `http://localhost:3000/` locally. Sign up for an
+account at `/accounts/signup/` (linked from the nav bar) to book seats.
+
+Demo data is seeded automatically by migration `bookings/0002_seed_demo_data`, so
+it runs on every fresh database — local or Render. To re-seed or add more sample
+data on an existing database, `python manage.py seed_demo_data` is also available
+(idempotent, safe to re-run).
 
 ## API endpoints
 
@@ -60,6 +65,7 @@ Then open the DevEdu "app" link, or `http://localhost:3000/` locally.
 | `/` | Movie listing |
 | `/movies/<id>/book/` | Seat picker + booking form for a movie |
 | `/bookings/history/` | Logged-in user's booking history |
+| `/accounts/signup/` | Create an account |
 | `/accounts/login/`, `/accounts/logout/` | Auth (Django's built-in auth views) |
 | `/admin/` | Django admin |
 
@@ -71,7 +77,7 @@ python manage.py test bookings
 
 # Coverage report
 coverage run --source=bookings manage.py test bookings
-coverage report -m      # 98% coverage on bookings/
+coverage report -m      # ~92% coverage on bookings/
 
 # BDD tests (Behave)
 python manage.py behave

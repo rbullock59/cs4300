@@ -1,4 +1,6 @@
+from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import get_object_or_404, redirect, render
 from rest_framework import permissions, viewsets
 
@@ -31,6 +33,18 @@ class BookingViewSet(viewsets.ModelViewSet):
 
 # --- Template (MVT) views ---
 
+def signup(request):
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            return redirect('movie_list')
+    else:
+        form = UserCreationForm()
+    return render(request, 'registration/signup.html', {'form': form})
+
+
 def movie_list(request):
     movies = Movie.objects.all()
     return render(request, 'bookings/movie_list.html', {'movies': movies})
@@ -45,7 +59,7 @@ def seat_booking(request, movie_id):
         Booking.objects.create(movie=movie, seat=seat, user=request.user)
         seat.is_booked = True
         seat.save(update_fields=['is_booked'])
-        return redirect('booking-history')
+        return redirect('booking_history')
     seats = Seat.objects.all()
     return render(request, 'bookings/seat_booking.html', {'movie': movie, 'seats': seats})
 

@@ -35,7 +35,10 @@ class Booking(models.Model):
     class Meta:
         ordering = ['-booking_date']
         constraints = [
-            models.UniqueConstraint(fields=['movie', 'seat'], name='unique_seat_per_movie'),
+            # Seats aren't scoped per movie/showtime in this model, so a seat
+            # can only ever be booked once, matching Seat.is_booked being a
+            # global flag rather than a per-movie one.
+            models.UniqueConstraint(fields=['seat'], name='unique_booking_per_seat'),
         ]
 
     def __str__(self):

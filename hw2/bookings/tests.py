@@ -23,15 +23,18 @@ class SeatModelTests(APITestCase):
 
 
 class BookingModelTests(APITestCase):
-    def test_unique_seat_per_movie(self):
+    def test_seat_can_only_be_booked_once(self):
         user = User.objects.create_user(username="alice", password="pw12345")
         movie = Movie.objects.create(
             title="Dune", description="", release_date=date(2024, 1, 1), duration=155
         )
+        other_movie = Movie.objects.create(
+            title="Oppenheimer", description="", release_date=date(2023, 7, 21), duration=180
+        )
         seat = Seat.objects.create(seat_number="A1")
         Booking.objects.create(movie=movie, seat=seat, user=user)
         with self.assertRaises(Exception):
-            Booking.objects.create(movie=movie, seat=seat, user=user)
+            Booking.objects.create(movie=other_movie, seat=seat, user=user)
 
 
 class MovieApiTests(APITestCase):
@@ -128,5 +131,21 @@ class TemplateViewTests(APITestCase):
     def test_booking_history_page(self):
         self.client.login(username="alice", password="pw12345")
         Booking.objects.create(movie=self.movie, seat=self.seat, user=self.user)
-        response = self.client.get(reverse('booking-history'))
+        response = self.client.get(reverse('booking_history'))
         self.assertContains(response, "Dune")
+
+
+class SignupTests(APITestCase):
+    def test_signup_page_loads(self):
+        response = self.client.get(reverse('signup'))
+        self.assertEqual(response.status_code, 200)
+
+    def test_signup_creates_user_and_logs_in(self):
+        response = self.client.post(reverse('signup'), {
+            "username": "newuser",
+            "password1": "a-very-strong-pw-1",
+            "password2": "a-very-strong-pw-1",
+        })
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(User.objects.filter(username="newuser").exists())
+        self.assertIn('_auth_user_id', self.client.session)

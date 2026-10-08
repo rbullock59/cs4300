@@ -64,7 +64,7 @@ def step_seat_booked(context, seat_number):
 
 @then('my booking history should contain "{title}"')
 def step_booking_history(context, title):
-    response = context.test.client.get(reverse('booking-history'))
+    response = context.test.client.get(reverse('booking_history'))
     assert title.encode() in response.content
 
 
