@@ -97,11 +97,18 @@ This repo includes a `render.yaml` and `Procfile` for a Render **Web Service**:
 
 ## AI usage disclosure
 
-Claude (Anthropic, Sonnet 5) was used via Claude Code to scaffold and implement
-this project end-to-end from the homework 2 PDF spec: generating the Django/DRF
-project structure (models, serializers, viewsets, URLs), the Bootstrap templates,
-the unit/integration test suite, the Behave BDD feature + step definitions, and
-the Render deployment config (`Procfile`, `render.yaml`). All generated code was
-reviewed and run locally (migrations, `manage.py test`, `manage.py behave`,
-`collectstatic`, and manual smoke testing of the running server) before being
-committed.
+**Tool:** Claude (Anthropic, Claude Sonnet 5), via the Claude Code CLI.
+
+**Used for:**
+- Generating the Django/DRF project (models, serializers, viewsets, URLs) from the
+  homework 2 spec.
+- Writing the Bootstrap templates and UI (movie list, seat booking, booking
+  history, login/signup).
+- Writing the unit/integration test suite and the Behave BDD feature + step
+  definitions.
+- Writing the deployment config (`Procfile`, `render.yaml`) and this README.
+
+**How it was incorporated:** All generated code was reviewed, run, and verified
+locally before being committed — migrations applied, `manage.py test` and
+`manage.py behave` passing, `collectstatic` run, and the running server smoke-tested
+by hand (signup, booking, cancellation flows).
