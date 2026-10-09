@@ -5,6 +5,8 @@ book seats, and check their booking history — both through a JSON API
 (Django REST Framework) and through a Bootstrap-styled web UI (Django
 templates) that drive the same underlying data.
 
+**Live app:** https://movie-theater-booking-3px1.onrender.com/
+
 ## Project structure
 
 ```
@@ -93,7 +95,7 @@ This repo includes a `render.yaml` and `Procfile` for a Render **Web Service**:
   sets `RENDER_EXTERNAL_HOSTNAME`, which `settings.py` adds to `ALLOWED_HOSTS`.
 - Static files are served via WhiteNoise, no separate CDN needed.
 
-**Live URL:** _add your Render URL here after deploying_.
+**Live URL:** https://movie-theater-booking-3px1.onrender.com/
 
 ## AI usage disclosure
 
