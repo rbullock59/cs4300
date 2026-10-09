@@ -43,3 +43,9 @@ class Booking(models.Model):
 
     def __str__(self):
         return f"{self.user} - {self.movie} - seat {self.seat}"
+
+    def delete(self, *args, **kwargs):
+        seat = self.seat
+        super().delete(*args, **kwargs)
+        seat.is_booked = False
+        seat.save(update_fields=['is_booked'])

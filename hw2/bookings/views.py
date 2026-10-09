@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
@@ -39,6 +40,7 @@ def signup(request):
         if form.is_valid():
             user = form.save()
             login(request, user)
+            messages.success(request, f"Welcome, {user.username}! Your account is ready.")
             return redirect('movie_list')
     else:
         form = UserCreationForm()
@@ -59,12 +61,26 @@ def seat_booking(request, movie_id):
         Booking.objects.create(movie=movie, seat=seat, user=request.user)
         seat.is_booked = True
         seat.save(update_fields=['is_booked'])
+        messages.success(request, f"Seat {seat.seat_number} booked for {movie.title}.")
         return redirect('booking_history')
     seats = Seat.objects.all()
-    return render(request, 'bookings/seat_booking.html', {'movie': movie, 'seats': seats})
+    seats_available = seats.filter(is_booked=False).count()
+    return render(request, 'bookings/seat_booking.html', {
+        'movie': movie, 'seats': seats, 'seats_available': seats_available,
+    })
 
 
 @login_required
 def booking_history(request):
     bookings = Booking.objects.filter(user=request.user).select_related('movie', 'seat')
     return render(request, 'bookings/booking_history.html', {'bookings': bookings})
+
+
+@login_required
+def cancel_booking(request, booking_id):
+    booking = get_object_or_404(Booking, pk=booking_id, user=request.user)
+    if request.method == 'POST':
+        movie_title, seat_number = booking.movie.title, booking.seat.seat_number
+        booking.delete()
+        messages.success(request, f"Cancelled seat {seat_number} for {movie_title}.")
+    return redirect('booking_history')

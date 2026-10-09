@@ -6,16 +6,18 @@
     {% for movie in movies %}
     <div class="col">
         <div class="card h-100 shadow-sm">
-            <div class="card-body">
+            <div class="card-body d-flex flex-column">
                 <h5 class="card-title">{{ movie.title }}</h5>
-                <p class="card-text text-muted">{{ movie.release_date }} &middot; {{ movie.duration }} min</p>
-                <p class="card-text">{{ movie.description }}</p>
-                <a href="{% url 'book_seat' movie.id %}" class="btn btn-primary">Book Now</a>
+                <p class="card-text text-muted mb-2">{{ movie.release_date }} &middot; {{ movie.duration }} min</p>
+                <p class="card-text flex-grow-1">{{ movie.description }}</p>
+                <a href="{% url 'book_seat' movie.id %}" class="btn btn-primary mt-2">Book Now</a>
             </div>
         </div>
     </div>
     {% empty %}
-    <p>No movies available yet.</p>
+    <div class="col">
+        <p class="text-muted">No movies available yet. Check back soon.</p>
+    </div>
     {% endfor %}
 </div>
 {% endblock %}

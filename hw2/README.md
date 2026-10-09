@@ -64,7 +64,7 @@ data on an existing database, `python manage.py seed_demo_data` is also availabl
 |---|---|
 | `/` | Movie listing |
 | `/movies/<id>/book/` | Seat picker + booking form for a movie |
-| `/bookings/history/` | Logged-in user's booking history |
+| `/bookings/history/` | Logged-in user's booking history, with a Cancel action per booking |
 | `/accounts/signup/` | Create an account |
 | `/accounts/login/`, `/accounts/logout/` | Auth (Django's built-in auth views) |
 | `/admin/` | Django admin |
@@ -77,7 +77,7 @@ python manage.py test bookings
 
 # Coverage report
 coverage run --source=bookings manage.py test bookings
-coverage report -m      # ~92% coverage on bookings/
+coverage report -m      # ~93% coverage on bookings/
 
 # BDD tests (Behave)
 python manage.py behave

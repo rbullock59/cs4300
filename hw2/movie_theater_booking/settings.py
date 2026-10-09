@@ -138,6 +138,13 @@ REST_FRAMEWORK = {
 LOGIN_REDIRECT_URL = 'movie_list'
 LOGOUT_REDIRECT_URL = 'movie_list'
 
+# Map Django's message levels to Bootstrap 5 alert classes
+from django.contrib.messages import constants as message_constants  # noqa: E402
+
+MESSAGE_TAGS = {
+    message_constants.ERROR: 'danger',
+}
+
 
 # Email
 # https://docs.djangoproject.com/en/6.1/topics/email/#topic-email-configuration

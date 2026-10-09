@@ -102,6 +102,14 @@ class BookingApiTests(APITestCase):
         response = self.client.get(url)
         self.assertEqual(response.data['count'], 0)
 
+    def test_delete_booking_frees_seat(self):
+        self.client.login(username="alice", password="pw12345")
+        booking = Booking.objects.create(movie=self.movie, seat=self.seat, user=self.user)
+        response = self.client.delete(reverse('booking-detail', args=[booking.id]))
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.seat.refresh_from_db()
+        self.assertFalse(self.seat.is_booked)
+
 
 class TemplateViewTests(APITestCase):
     def setUp(self):
@@ -133,6 +141,25 @@ class TemplateViewTests(APITestCase):
         Booking.objects.create(movie=self.movie, seat=self.seat, user=self.user)
         response = self.client.get(reverse('booking_history'))
         self.assertContains(response, "Dune")
+
+    def test_cancel_booking_frees_seat(self):
+        self.client.login(username="alice", password="pw12345")
+        booking = Booking.objects.create(movie=self.movie, seat=self.seat, user=self.user)
+        self.seat.is_booked = True
+        self.seat.save(update_fields=['is_booked'])
+        response = self.client.post(reverse('cancel_booking', args=[booking.id]))
+        self.assertEqual(response.status_code, 302)
+        self.assertFalse(Booking.objects.filter(id=booking.id).exists())
+        self.seat.refresh_from_db()
+        self.assertFalse(self.seat.is_booked)
+
+    def test_cannot_cancel_another_users_booking(self):
+        other = User.objects.create_user(username="carl", password="pw12345")
+        booking = Booking.objects.create(movie=self.movie, seat=self.seat, user=other)
+        self.client.login(username="alice", password="pw12345")
+        response = self.client.post(reverse('cancel_booking', args=[booking.id]))
+        self.assertEqual(response.status_code, 404)
+        self.assertTrue(Booking.objects.filter(id=booking.id).exists())
 
 
 class SignupTests(APITestCase):

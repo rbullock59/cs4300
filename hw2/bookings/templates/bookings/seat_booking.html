@@ -1,23 +1,34 @@
 {% extends 'bookings/base.html' %}
-{% block title %}Book a Seat{% endblock %}
+{% block title %}Book a Seat — {{ movie.title }}{% endblock %}
 {% block content %}
+<a href="{% url 'movie_list' %}" class="d-inline-block mb-3 text-decoration-none">&larr; Back to movies</a>
 <h2 class="mb-1">{{ movie.title }}</h2>
 <p class="text-muted">{{ movie.release_date }} &middot; {{ movie.duration }} min</p>
+
+<div class="d-flex align-items-center gap-3 mb-3 small">
+    <span><span class="badge rounded-pill text-bg-success">&nbsp;</span> Available</span>
+    <span><span class="badge rounded-pill text-bg-secondary">&nbsp;</span> Booked</span>
+    <span class="text-muted ms-auto">{{ seats_available }} of {{ seats|length }} seats open</span>
+</div>
+
 <form method="post">
     {% csrf_token %}
     <div class="row row-cols-4 row-cols-md-6 g-2 mb-4">
         {% for seat in seats %}
         <div class="col">
-            <label class="btn btn-outline-{% if seat.is_booked %}secondary disabled{% else %}success{% endif %} w-100">
-                <input type="radio" name="seat_id" value="{{ seat.id }}" class="d-none"
-                       {% if seat.is_booked %}disabled{% endif %} required>
+            <input type="radio" class="btn-check" name="seat_id" id="seat-{{ seat.id }}" value="{{ seat.id }}"
+                   autocomplete="off" {% if seat.is_booked %}disabled{% else %}required{% endif %}>
+            <label class="btn btn-outline-{% if seat.is_booked %}secondary disabled{% else %}success{% endif %} w-100"
+                   for="seat-{{ seat.id }}">
                 {{ seat.seat_number }}
             </label>
         </div>
         {% empty %}
-        <p>No seats configured yet.</p>
+        <div class="col-12"><p class="text-muted">No seats configured yet.</p></div>
         {% endfor %}
     </div>
-    <button type="submit" class="btn btn-primary">Confirm Booking</button>
+    <button type="submit" class="btn btn-primary" {% if seats_available == 0 %}disabled{% endif %}>
+        Confirm Booking
+    </button>
 </form>
 {% endblock %}
